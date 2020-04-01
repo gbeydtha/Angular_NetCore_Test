@@ -29,8 +29,9 @@ namespace Angular_NetCore_Test.Controllers
             _appSettings = appSettings.Value;
         }
 
-        [HttpPost("action")]
-        public async Task<IActionResult> Register(RegisterViewModel formData)
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel formData)
         {
             var errorList = new List<string>();
             var user = new IdentityUser
@@ -61,7 +62,7 @@ namespace Angular_NetCore_Test.Controllers
             return BadRequest(new JsonResult(errorList));
         }
 
-        [HttpPost("action")]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel formData)
         {
             // Get the User frm Db
@@ -105,7 +106,8 @@ namespace Angular_NetCore_Test.Controllers
 
             // return error
             ModelState.AddModelError("", "Username/Password was not Found");
-            return Unauthorized(new { LoginError = "Please Check the Login Credentials - Ivalid Username/Password was entered" });
+            return Unauthorized(); 
+            //Unauthorized(new { LoginError = "Please Check the Login Credentials - Ivalid Username/Password was entered" });
         }
     }
 }
