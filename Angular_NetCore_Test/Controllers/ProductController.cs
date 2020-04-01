@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Angular_NetCore_Test.Data;
 using Angular_NetCore_Test.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,12 +22,14 @@ namespace Angular_NetCore_Test.Controllers
         }
         // GET: api/Product
         [HttpGet("[action]")]
+        [Authorize(Policy="RequireLoggedIn")]
         public IActionResult GetProducts()
         {
             return Ok(_dbContext.Products.ToList());
         }
 
-        [HttpPost("[action]")]
+        [HttpPost("[action]")] 
+        [Authorize(Policy = "RequiredAdministratorRole")]
         public async Task<IActionResult> AddProduct([FromBody] ProductModel formData)
         {
             var product = new ProductModel
@@ -39,11 +42,12 @@ namespace Angular_NetCore_Test.Controllers
             };
             await _dbContext.AddAsync(product);
             await _dbContext.SaveChangesAsync();
-            return Ok();
+            return Ok(new JsonResult("The product has successfully added"));
         }
 
         //api/product/1
-        [HttpPut("action")]
+        [HttpPut("[action]/{id}")]
+        [Authorize(Policy = "RequiredAdministratorRole")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductModel formData)
         {
             if (!ModelState.IsValid)
@@ -67,8 +71,9 @@ namespace Angular_NetCore_Test.Controllers
             return Ok(new JsonResult(" The Product id "+id+"is updated"));
 
         }
-
-        [HttpDelete("[action]")]
+         
+        [HttpDelete("[action]/{id}")]
+        [Authorize(Policy = "RequiredAdministratorRole")]
         public async Task<IActionResult> DeleteProduct([FromBody] int id)
         {
             if (!ModelState.IsValid)
