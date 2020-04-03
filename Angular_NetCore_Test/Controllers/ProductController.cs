@@ -20,16 +20,17 @@ namespace Angular_NetCore_Test.Controllers
         {
             _dbContext = dbContext; 
         }
+
         // GET: api/Product
-        [HttpGet("[action]")]
-        [Authorize(Policy="RequireLoggedIn")]
+        [HttpGet("[action]")]                           
+      //  [Authorize(Policy= "RequireLoggedIn")]
         public IActionResult GetProducts()
         {
             return Ok(_dbContext.Products.ToList());
         }
 
-        [HttpPost("[action]")] 
-        [Authorize(Policy = "RequiredAdministratorRole")]
+        [HttpPost("[action]")]        
+        //[Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> AddProduct([FromBody] ProductModel formData)
         {
             var product = new ProductModel
@@ -47,7 +48,7 @@ namespace Angular_NetCore_Test.Controllers
 
         //api/product/1
         [HttpPut("[action]/{id}")]
-        [Authorize(Policy = "RequiredAdministratorRole")]
+        //[Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductModel formData)
         {
             if (!ModelState.IsValid)
@@ -72,9 +73,9 @@ namespace Angular_NetCore_Test.Controllers
 
         }
          
-        [HttpDelete("[action]/{id}")]
-        [Authorize(Policy = "RequiredAdministratorRole")]
-        public async Task<IActionResult> DeleteProduct([FromBody] int id)
+        [HttpDelete("[action]/{id}")]                             
+        //[Authorize(Policy = "RequireAdministratorRole")]
+        public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
